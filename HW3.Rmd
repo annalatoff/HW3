@@ -5,22 +5,28 @@ date: "11/2/2019"
 output: html_document
 ---
 
+Anna, this is a Rmarkdown file which is desgined to produce a literate program by integrating R code with 
+Markdown. But its actually not really set up that way and doesnt work properly.  It looks like youve probably included straight R code into markdown sections. We'll actually cover how to make files like this that work 
+in class but havent yet.  I've put some comments here for the purpose of criticuing the R script, but I've also uploaded a demo document to your repository. 
+
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE) # not necessary. 
 ```
 
 #this assignment uses R version 3.6.1#
 #A Latoff 10.31.19#
-#take home assignment 3#
+#take home assignment 3#  JY: suggest a preamble more like the one in demo
 
 #installing ggplot2#
-install.packages("ggplot2")
-library(ggplot2)
-data("diamonds")
+install.packages("ggplot2") # DONT KEEP THESE LINES IN FILE THEY CAUSE PROBLEMS
+library(ggplot2) 
+data("diamonds") # DONT NEED THE DOUBLE QUOTES
 
 #visualizing data#
-head(diamonds, 6)
+head(diamonds, 6) # YES though dont need six as head() defaults to this number anyway
 
+
+# you do not need to print the results in your script your self (nor should you). It will cause problems when you # want to run it
 
 # A tibble: 6 x 10
   carat cut       color clarity depth table price     x     y     z
@@ -31,3 +37,7 @@ head(diamonds, 6)
 4 0.290 Premium   I     VS2      62.4    58   334  4.2   4.23  2.63
 5 0.31  Good      J     SI2      63.3    58   335  4.34  4.35  2.75
 6 0.24  Very Good J     VVS2     62.8    57   336  3.94  3.96  2.48
+
+
+## FOR GRADE The assignement was 2 days late, thus -10 points while the script contains the correct R commands
+## it doesnt run as an R script, nor does it correctly compile as an R markdown notebook or dynamic document. So ## I have to take a few points there ultimately it is  75/100 
