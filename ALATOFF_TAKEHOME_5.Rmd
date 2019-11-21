@@ -1,0 +1,137 @@
+---
+title: "ALATOFF_TAKEHOME_5"
+author: "annalatoff"
+date: "11/21/2019"
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+# ----------------------------------------------------------#
+# universal statements                                      #
+# title: 'Take Home 4'                                      #
+# author: "Anna Latoff"                                     #
+# date: "17 November 2019"                                  #
+# This script is a fufillment of the Homework assignment #4 #
+# using the data set ghana_bednet.csv                       #
+# It requires the use of readr and ggplot2 as well as the   # 
+# r markdown and knitr packages                             #
+# It was developed in R 3.6.1                               #
+#-----------------------------------------------------------#
+
+#input data#
+library(readr)
+ghana_bednet <- read_csv("~/Documents/ghana_bednet.csv")
+View(ghana_bednet)
+
+#1#
+#There are 26324 observations in the dataset#
+
+#2#
+summary(ghana_bednet)
+#There are 8 variables in the dataset#
+
+#cleaning gender data#
+ghana_bednet$sex[ghana_bednet$sex == "F"] <- 1
+Q3<-ghana_bednet[-c(20124),]
+
+#3#
+three <- table(Q3$sex)
+three
+#13305/26341, or 0.5051 ~ 50.51% of the children are male. This calculation excludes the na datapoint.#
+
+#4#
+Q4 <- subset.data.frame(ghana_bednet, bednet == "1")
+Q42 <- subset.data.frame(Q4, sex == "1")
+sum(Q42$follyr, na.rm = TRUE)
+#The total number of follow-up years for females in the treatment arm is 8395.184 years#
+
+#5#
+Q5 <- subset.data.frame(ghana_bednet, cluster == "52")
+five <- table(Q5$outcome)
+five
+#9/370, or 0.024 --> 2.4% of children in cluster 52 died#
+
+#6#
+mean(ghana_bednet$agemn)
+sd(ghana_bednet$agemn)
+#The average subject's age is 25.287 months, or 2 years. The standard deviation of the subject's age is 18.02 months.#
+
+#7#
+Q7 <- subset.data.frame(ghana_bednet, bednet == "0")
+seven <- table(Q7$outcome)
+seven
+sum(Q7$follyr, na.rm = TRUE)
+#The mortality rate in the control is 461/16492.83, or 27.95 deaths per 1000 person-years#
+
+Q72 <- subset.data.frame(ghana_bednet, bednet == "1")
+seventwo <- table(Q72$outcome)
+seventwo
+sum(Q72$follyr, na.rm = TRUE)
+#The mortality rate in the intervention is 396/16841.04, or 23.51 deaths per 1000 person-years#
+
+#8#
+Q8 <- subset.data.frame(ghana_bednet, outcome == "1")
+counts <- table(Q8$cluster)
+barplot(counts, main="Deaths per Cluster",
+        xlab="Cluster Group")
+
+#9#
+model9 <- (glm(outcome ~ bednet, family = binomial(link=logit), data = ghana_bednet))
+print(model9)
+
+#10#
+#per question 7: control mortality rate: 27.95 per 1000 person-years; intervention mortality rate: 23.51 per 1000 person-years#
+#Therefore, there is a higher probability of dying in the control group compared to the treatment arm#
+
+#write ttest function#
+TTest<-function(v1,v2){
+#define variables#
+m1<-mean(v1,na.rm=T) 
+m2<-mean(v2,na.rm=T) 
+s1<-var(v1,na.rm=T) #na.rm=T means to remove any NA values in the dataframe
+s2<-var(v2,na.rm=T) 
+n1<-length(v1)-sum(is.na(v1))
+n2<-length(v2)-sum(is.na(v2)) 
+#do T test#
+t<-abs((m1-m2)/sqrt((s1/n1)+(s2/n2)))
+df<-n1+n2-2
+p<-2*pt(t,df,lower.tail=F)
+Results<-data.frame(t,df,p)
+return(Results)}
+
+#ttest#
+# if p < 0.05, compare to calculated averages (larger number is statistically significant relationship)#
+TTest(ghana_bednet$outcome,ghana_bednet$bednet)
+#the associated p-value is 0.00; p < 0.05 therefore the association is statistically significant#
+
+#odds ratio#
+ten <- table(ghana_bednet$outcome, ghana_bednet$bednet)
+ten 
+#the odds ratio is (12568*396 / 12917*461) = 4976928 / 5954737 = 0.8357#
+#thus, the odds of dying are lower (0.8357 < 1) in the intervention group#
+
+
+```
