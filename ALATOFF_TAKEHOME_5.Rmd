@@ -16,6 +16,7 @@ This is an R Markdown document. Markdown is a simple formatting syntax for autho
 When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
 ```{r cars}
+#not sure why this dataset is here
 summary(cars)
 ```
 
@@ -56,6 +57,8 @@ summary(ghana_bednet)
 #cleaning gender data#
 ghana_bednet$sex[ghana_bednet$sex == "F"] <- 1
 Q3<-ghana_bednet[-c(20124),]
+
+#you didn't take care of any missing values above (missing data in this dataset is denoted as .), I suggest using the describe command so you get a good overview of your dataset for questions 1,2 and 3. Doing calculations by hand (as in question 3) are subject to introducing human error.
 
 #3#
 three <- table(Q3$sex)
@@ -98,6 +101,8 @@ counts <- table(Q8$cluster)
 barplot(counts, main="Deaths per Cluster",
         xlab="Cluster Group")
 
+#this syntax did not produce a bar graph
+
 #9#
 model9 <- (glm(outcome ~ bednet, family = binomial(link=logit), data = ghana_bednet))
 print(model9)
@@ -105,6 +110,8 @@ print(model9)
 #10#
 #per question 7: control mortality rate: 27.95 per 1000 person-years; intervention mortality rate: 23.51 per 1000 person-years#
 #Therefore, there is a higher probability of dying in the control group compared to the treatment arm#
+
+#the answer to this question is in reference to the logistic regression you ran in question 9 where you interpreting the coefficient of the bednet variable (-0.1794) which shows a reduced probability of dying in the intervention group (with bednets) when compared to the non-intervention group (no bednets). T-test would not be appropriate to run as we are not comparing means of death rather the probability of death between the two groups.
 
 #write ttest function#
 TTest<-function(v1,v2){
@@ -133,5 +140,7 @@ ten
 #the odds ratio is (12568*396 / 12917*461) = 4976928 / 5954737 = 0.8357#
 #thus, the odds of dying are lower (0.8357 < 1) in the intervention group#
 
+#good job in working out the odds ratio; please also note that the logistic regression you correctly ran in question 9 contained this information. You can take the exp(bednet coeffcient) -> odds ratio of 0.8357 
 
 ```
+#nice preamble and well annotated script; good job in subsetting your data to filter out the observations of interest for analysis; however, I suggest practicing more using piping operators which helps reduce the amount of intermediate steps (for example in questions 4,5 and 7).
