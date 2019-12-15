@@ -1,0 +1,261 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+# ----------------------------------------------------------#
+# universal statements                                      #
+# title: 'Final Exam'                                       #
+# author: "Anna Latoff"                                     #
+# date: "13 December 2019"                                  #
+# This script is a fufillment of the Final Exam 3           #
+# using the data set nola_crime_2018,iris, mtcars           #
+# It requires the use of readr and ggplot2 as well as the   # 
+# r markdown, tidyverse, and knitr packages                 #
+# It was developed in R 3.6.1                               #
+#-----------------------------------------------------------#
+```{r}
+#load required libraries#
+library(ggplot2)
+library(tidyverse)
+library(dplyr)
+
+#input data#
+library(readr)
+nola_crime_2018 <- read_csv("~/Documents/nola_crime_2018.csv")
+View(nola_crime_2018)
+#1#
+#There are 9970 observations in the dataset#
+#2#
+#There are 24 variables in the dataset#
+```
+```{r}
+#3#
+Q3 <- nola_crime_2018[!duplicated(nola_crime_2018$Item_Number),]
+view(Q3)
+#There are 9384 unique item numbers in the variable Item_Number#
+```
+
+
+```{r}
+#4#
+IRISHCHANNEL <- subset.data.frame(Q3, GNOCDC_LAB == "IRISH CHANNEL")
+view(IRISHCHANNEL)
+#There was 1 "aggravated" crime in the Irish Channel after removing duplicate Item Numbers#
+```
+
+
+```{r}
+#5#
+five <- table(Q3$GNOCDC_LAB)
+view(five)
+#The French Channel and Little Woods neighborhoods had the most unique crime items#
+```
+
+
+```{r}
+#6#
+freqpop <- table(Q3$pop, Q3$GNOCDC_LAB)
+view(freqpop)
+realf<- as.data.frame(freqpop)
+realfreq<-realf[!(realf$Freq==0),]
+view(realfreq)
+colnames(realfreq) <- c("Pop","Neigh","Freq")
+view(realfreq)
+
+realfreq$Pop <- as.numeric(as.character(realfreq$Pop))
+realfreq$Number <- (realfreq$Freq/realfreq$Pop)*1000
+
+print(realfreq)
+#See table realfreq#
+```
+
+
+```{r}
+#7#
+#Table realfreq answers this question#
+#Little Woods has the highest population, with 44947 individuals#
+```
+
+
+```{r}
+#8#
+#Table realfreq answers this question#
+#Lakewood has the lowest rate of crime at 0.7148474 per 1000 person years, with 13989 individuals and 10 crimes#
+```
+
+
+```{r}
+#9#
+realfreq$Ratio <- (realfreq$Number/0.7148474)
+
+print(realfreq)
+#See table realfreq#
+```
+
+
+```{r}
+#10
+rape_u <- subset.data.frame(Q3,Q3$Signal_Description=='AGGRAVATED RAPE UNFOUNDED')
+rape <- subset.data.frame(Q3,Q3$Signal_Description=='AGGRAVATED RAPE')
+rape_m <- subset.data.frame(Q3,Q3$Signal_Description=='AGGRAVATED RAPE (MALE VICTIM)')
+damage <- subset.data.frame(Q3,Q3$Signal_Description=='AGGRAVATED CRIMINAL DAMAGE')
+burglary_d <- subset.data.frame(Q3,Q3$Signal_Description=='AGGRAVATED BURGLARY (DOMESTIC)')
+burglary <- subset.data.frame(Q3,Q3$Signal_Description=='AGGRAVATED BURGLARY')
+battery_s <- subset.data.frame(Q3,Q3$Signal_Description=='AGGRAVATED BATTERY (SHOOTING)')
+battery_d <- subset.data.frame(Q3,Q3$Signal_Description=='AGGRAVATED BATTERY (DOMESTIC)')
+battery_c <- subset.data.frame(Q3,Q3$Signal_Description=='AGGRAVATED BATTERY (CUTTING)')
+battery <- subset.data.frame(Q3,Q3$Signal_Description=='AGGRAVATED BATTERY')
+assault_d <- subset.data.frame(Q3,Q3$Signal_Description=='AGGRAVATED ASSAULT (DOMESTIC)')
+assault <- subset.data.frame(Q3,Q3$Signal_Description=='AGGRAVATED ASSAULT')
+arson <- subset.data.frame(Q3,Q3$Signal_Description=='AGGRAVATED ARSON')
+
+ten <- rbind(arson, assault, assault_d, battery, battery_c, battery_d, battery_s, burglary, burglary_d, damage, rape_m, rape, rape_u)
+
+freqagg <- table(ten$pop, ten$GNOCDC_LAB)
+view(freqagg)
+realfa<- as.data.frame(freqagg)
+realagg<-realfa[!(realfa$Freq==0),]
+view(realagg)
+colnames(realagg) <- c("Pop","Neigh","Freq")
+
+realagg$Pop <- as.numeric(as.factor(realagg$Pop))
+realagg$Rate <- (realagg$Freq/realagg$Pop)*1000
+realagg$Ratio <- (realagg$Rate/0.789)
+
+print(realagg)
+#See table realagg (*rate per 1000)#
+```
+
+```{r}
+#11#
+desc <- table(Q3$Signal_Description)
+realdesc<- as.data.frame(desc)
+colnames(realdesc) <- c("desc","Freq")
+
+charge <- table(Q3$Charge_Description)
+realcharge<- as.data.frame(desc)
+colnames(realcharge) <- c("charge","Freq")
+
+#The most common cause of a report being filed was disturbance (domestic); the most common charge filed was disturbance (domestic)#
+```
+
+
+```{r}
+#12#
+domestic<-subset.data.frame(Q3,Q3$Signal_Description=='DISTURBANCE (DOMESTIC)')
+freqneighb <- table(domestic$GNOCDC_LAB, domestic$pop)
+realfnb<- as.data.frame(freqneighb)
+realdomestic<-realfnb[!(realfnb$Freq==0),]
+view(realdomestic)
+colnames(realdomestic) <- c("Neigh","Pop","Freq")
+
+realdomestic$Pop <- as.numeric(as.character(realdomestic$Pop))
+realdomestic$Rate <- (realdomestic$Freq/realdomestic$Pop)*1000
+print(realdomestic)
+#See table realdomestic (*rate per 1000)#
+```
+
+
+```{r}
+#13#
+freqage <- table(Q3$Offender_Age, Q3$GNOCDC_LAB, Q3$pop)
+view(freqage)
+realage<- as.data.frame(freqage)
+realages<-realage[!(realage$Freq==0),]
+view(realages)
+colnames(realages) <- c("Age","Neigh","Pop","Freq")
+
+realages$Age <- as.numeric(as.factor(realages$Age))
+realages$Rate <- (realages$Freq*realages$Age)
+
+freqa <- cbind(aggregate(Freq~Pop, sum, data=realages), table(realages$Neigh))[, -4]
+agesum<- as.data.frame(freqa)
+colnames(agesum) <- c("Pop","Freq","Neigh")
+freqr <- cbind(aggregate(Rate~Pop, sum, data=realages), table(realages$Neigh))[, -4]
+ratesum<- as.data.frame(freqr)
+colnames(ratesum) <- c("Pop","Sum","Neigh")
+str(ratesum)
+
+thirteen<-left_join(ratesum,agesum, by="Pop")
+thirteen <- thirteen[-c(3)]
+colnames(thirteen) <- c("Pop","Sum","Freq","Neigh")
+thirteen$Mean <- (thirteen$Sum/thirteen$Freq)
+thirteen$Pop <- as.numeric(as.character(thirteen$Pop))
+thirteen$Rate <- (thirteen$Freq/thirteen$Pop)*1000
+thirteen <- thirteen[-c(1,2,3)]
+colnames(thirteen) <- c("Neighborhood","Mean_Age","Crime_Rate")
+#*the crime rate in this linear regression was calculated for data points with a reported age; NAs were excluded#
+model <- lm(Crime_Rate ~ Mean_Age + Neighborhood, data = thirteen)
+summary(model)
+```
+
+
+```{r}
+#14#
+fourteen <- table(Q3$pop)
+view(fourteen)
+fourteenclean <- as.data.frame(fourteen)
+colnames(fourteenclean) <- c("Pop","Freq")
+fourteenclean$Pop <- as.numeric(as.character(fourteenclean$Pop))
+fourteenclean$Rate <- (fourteenclean$Pop/fourteenclean$Freq)*1000
+#The neighborhood with the greatest number of reports compared to lowest population is Lakewood#
+```
+
+
+```{r}
+#15#
+set.seed(12111978)
+vec <- rpois(10000, 4.7)
+Histo <- hist(vec, prob=TRUE, ylim = c(0, 1),
+  main="Histogram of Poisson Distribution")
+  lines(0:max(vec), dpois(0:max(vec), mean(vec)), col = 'red')
+  
+  #See histogram#
+```
+
+
+```{r}
+#16#
+data("iris")
+str(iris)
+head(iris)
+sp.l <- split(iris,iris$Species)
+str(sp.l)
+meansepal <- list()
+for(n in names(sp.l)){   
+   dat <- sp.l[[n]]
+   meansepal[[n]] <- data.frame(species=n,
+                          mean.sepal.length=mean(dat$Sepal.Length),
+                          sd.sepal.length=sd(dat$Sepal.Length),
+                          n.samples=nrow(dat))
+}
+view(meansepal)
+print(meansepal)
+```
+
+
+```{r}
+#17#
+data(mtcars)
+ggplot(mtcars, aes(mpg, disp, color=cyl)) +
+  geom_point()+
+  geom_smooth(method = "lm", se = FALSE)
+```
+
+```{r}
+# numeric
+x <- c(-4.89, -1.93, -1.11, 3.94, 0.46, -3.85, -0.20, 6.04,9.36, 7.26, 4.88, 13.45, -2.93, 6.39, -16.22, -3.24, 6.86, 11.87, 1.81, -2.54)
+x
+scale(x, center = TRUE, scale = FALSE)
+```
+
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
