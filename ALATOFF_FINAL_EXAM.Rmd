@@ -37,6 +37,8 @@ View(nola_crime_2018)
 #3#
 Q3 <- nola_crime_2018[!duplicated(nola_crime_2018$Item_Number),]
 view(Q3)
+#it is up to you if you want to keep the view command in your code but it is not necessary to include it (most people don't include this in their code); for question #5 where you also have the view command, it was helpful to include here because you created table values and not objects as you did here in question 3 (for question 3 since you created an object, whoever is reading your code can access the object from the global environment to view the data)
+
 #There are 9384 unique item numbers in the variable Item_Number#
 ```
 
@@ -66,9 +68,10 @@ realfreq<-realf[!(realf$Freq==0),]
 view(realfreq)
 colnames(realfreq) <- c("Pop","Neigh","Freq")
 view(realfreq)
+#great job in cleaning up your data so it is in usable form!
 
 realfreq$Pop <- as.numeric(as.character(realfreq$Pop))
-realfreq$Number <- (realfreq$Freq/realfreq$Pop)*1000
+realfreq$Number <- (realfreq$Freq*1000/realfreq$Pop)
 
 print(realfreq)
 #See table realfreq#
@@ -124,9 +127,9 @@ view(realagg)
 colnames(realagg) <- c("Pop","Neigh","Freq")
 
 realagg$Pop <- as.numeric(as.factor(realagg$Pop))
-realagg$Rate <- (realagg$Freq/realagg$Pop)*1000
+realagg$Rate <- (realagg$Freq*1000/realagg$Pop)
 realagg$Ratio <- (realagg$Rate/0.789)
-
+#even when I corrected the rate calculation, your rates and ratios are still extremely high...
 print(realagg)
 #See table realagg (*rate per 1000)#
 ```
@@ -155,7 +158,7 @@ view(realdomestic)
 colnames(realdomestic) <- c("Neigh","Pop","Freq")
 
 realdomestic$Pop <- as.numeric(as.character(realdomestic$Pop))
-realdomestic$Rate <- (realdomestic$Freq/realdomestic$Pop)*1000
+realdomestic$Rate <- (realdomestic$Freq*1000/realdomestic$Pop)
 print(realdomestic)
 #See table realdomestic (*rate per 1000)#
 ```
@@ -190,7 +193,7 @@ thirteen$Rate <- (thirteen$Freq/thirteen$Pop)*1000
 thirteen <- thirteen[-c(1,2,3)]
 colnames(thirteen) <- c("Neighborhood","Mean_Age","Crime_Rate")
 #*the crime rate in this linear regression was calculated for data points with a reported age; NAs were excluded#
-model <- lm(Crime_Rate ~ Mean_Age + Neighborhood, data = thirteen)
+model <- lm(Crime_Rate ~ Mean_Age, data = thirteen)
 summary(model)
 ```
 
@@ -203,6 +206,8 @@ fourteenclean <- as.data.frame(fourteen)
 colnames(fourteenclean) <- c("Pop","Freq")
 fourteenclean$Pop <- as.numeric(as.character(fourteenclean$Pop))
 fourteenclean$Rate <- (fourteenclean$Pop/fourteenclean$Freq)*1000
+#be careful your rate calculation is set-up incorrectly, you just need to flip the denominator and numerator and place 1000 in the numerator
+
 #The neighborhood with the greatest number of reports compared to lowest population is Lakewood#
 ```
 
@@ -236,6 +241,8 @@ for(n in names(sp.l)){
 }
 view(meansepal)
 print(meansepal)
+
+#you did not state and show in yoru code what the three values were
 ```
 
 
@@ -252,10 +259,11 @@ ggplot(mtcars, aes(mpg, disp, color=cyl)) +
 x <- c(-4.89, -1.93, -1.11, 3.94, 0.46, -3.85, -0.20, 6.04,9.36, 7.26, 4.88, 13.45, -2.93, 6.39, -16.22, -3.24, 6.86, 11.87, 1.81, -2.54)
 x
 scale(x, center = TRUE, scale = FALSE)
+
+#incomplete answer, you didn't provide the z-scores
 ```
 
 
 When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
 
 The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
-
