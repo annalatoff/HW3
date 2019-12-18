@@ -26,8 +26,8 @@ library(dplyr)
 
 #input data#
 library(readr)
-nola_crime_2018 <- read_csv("~/Documents/nola_crime_2018.csv")
-View(nola_crime_2018)
+nola_crime_2018 <- read_csv("nola_crime_2018.csv")
+#View(nola_crime_2018)
 #1#
 #There are 9970 observations in the dataset#
 #2#
